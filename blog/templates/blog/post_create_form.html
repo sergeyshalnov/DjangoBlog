@@ -1,0 +1,27 @@
+{% extends 'blog/base-blog.html' %}
+
+{% block title %}
+    Create Post - {{ block.super }}
+{% endblock  %}
+
+
+{% block content %}
+
+    <form class="" action="{{ post.get_create_url }}" method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-group">
+                {% if field.errors %}
+                    <div class="alert alert-danger">
+                        {{ field.erros }}
+                    </div>
+                {% endif %}
+                {{ field.label }}
+                {{ field }}
+            </div>
+        {% endfor %}
+
+        <button type="submit" name="button" class="btn btn-primary" >Create post</button> 
+    </form>
+
+{% endblock  %}
