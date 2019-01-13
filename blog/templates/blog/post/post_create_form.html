@@ -1,0 +1,13 @@
+{% extends 'blog/blog_template.html' %}
+
+
+{% block title %}
+    Create Post - {{ block.super }}
+{% endblock  %}
+
+
+{% block content %}
+
+    {% include 'blog/includes/edit_form_template.html' %}
+
+{% endblock  %}

@@ -1,0 +1,13 @@
+{% extends 'blog/blog_template.html' %}
+
+
+{% block title %}
+    Delete Post "{{ post.title|title }}" - {{ block.super }}
+{% endblock %}
+
+
+{% block content %}
+    
+    {% include 'blog/includes/delete_form_template.html' %}
+
+{% endblock  %}

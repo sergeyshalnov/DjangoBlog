@@ -1,0 +1,20 @@
+<form action="{% if action == 'create' %} {{ obj.get_create_url }} {% else %} {{ obj.get_update_url }} {% endif %}" method="post">
+    {% csrf_token %}
+
+    {% for field in form %}
+
+        <div class="form-group">
+            {% if field.errors %}
+                <div class="alert alert-danger">
+                    {{ field.errors }}
+                </div>
+            {% endif %}
+
+            {{ field.label }}
+            {{ field }}
+        </div>
+
+    {% endfor %}
+
+    <button type="submit" class="btn btn-primary">{{ action|title }}</button>
+</form>

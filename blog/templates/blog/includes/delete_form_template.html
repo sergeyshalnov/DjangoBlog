@@ -1,0 +1,8 @@
+<form action="{{ obj.get_delete_url }}" method="post">
+    {% csrf_token %}
+
+    <h3 class="mb-4">Are you sure you want to delete <b>"{{ obj.title|title }}"</b> {{ model_name }}?</h3>
+    <a class="btn btn-secondary"  href="{{ obj.get_absolute_url }}">Cancel</a>
+    <button type="submit" name="button" class="btn btn-danger">Delete</button>
+
+</form>

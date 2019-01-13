@@ -1,8 +1,10 @@
-{% extends 'blog/base-blog.html' %}
+{% extends 'blog/blog_template.html' %}
+
 
 {% block title %}
     {{ post.title }} - {{ block.super }}
 {% endblock %}
+
 
 {% block content %}
     <h1 class="mt-5"> 

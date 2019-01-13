@@ -1,8 +1,10 @@
-{% extends 'blog/base-blog.html' %}
+{% extends 'blog/blog_template.html' %}
+
 
 {% block title %}
     {{ tag.title }} - {{ block.super }}
 {% endblock %}
+
 
 {% block content %}
     <h1 class="mb-5">Post with "{{ tag.title|title }}" tag:</h1> 

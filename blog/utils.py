@@ -17,10 +17,11 @@ class ObjectDetailMixin:
 class ObjectCreateMixin:
     model_form = None
     template = None 
+    action = 'create'
 
     def get(self, request):
         form = self.model_form()
-        return render(request, self.template, context={'form': form})
+        return render(request, self.template, context={'form': form, 'action': self.action})
 
     def post(self, request):
         bound_form = self.model_form(request.POST)
@@ -28,18 +29,19 @@ class ObjectCreateMixin:
         if bound_form.is_valid():
             new_obj = bound_form.save()
             return redirect(new_obj)
-        return render(request, self.template, context={'form': bound_form})
+        return render(request, self.template, context={'form': bound_form, 'action': self.action})
 
 
 class ObjectUpdateMixin:
     model = None
     model_form = None
     template = None
+    action = 'update'
 
     def get(self, request, slug):
         obj = self.model.objects.get(slug__iexact=slug)
         bound_form = self.model_form(instance=obj)
-        return render(request, self.template, context={'form': bound_form, self.model.__name__.lower(): obj})
+        return render(request, self.template, context={'form': bound_form, 'obj': obj, 'action': self.action})
 
     def post(self, request, slug):
         obj = self.model.objects.get(slug__iexact=slug)
@@ -48,7 +50,7 @@ class ObjectUpdateMixin:
         if bound_form.is_valid():
             new_obj = bound_form.save()
             return redirect(new_obj)
-        return render(request, self.template, context={'form': bound_form, self.model.__name__.lower(): obj})
+        return render(request, self.template, context={'form': bound_form, 'obj': obj, 'action': self.action})
 
 
 class ObjectDeleteMixin:
@@ -58,7 +60,7 @@ class ObjectDeleteMixin:
 
     def get(self, request, slug):
         obj = self.model.objects.get(slug__iexact=slug)    
-        return render(request, self.template, context={self.model.__name__.lower(): obj})
+        return render(request, self.template, context={'obj': obj, 'model_name': self.model.__name__.lower()})
 
     def post(self, request, slug):
         obj = self.model.objects.get(slug__iexact=slug)
