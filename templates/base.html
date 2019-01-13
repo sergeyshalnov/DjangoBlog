@@ -27,37 +27,66 @@
 <body>
    
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Navbar</a>
+        <a class="navbar-brand" href="#">DJANGO BLOG</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
       
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
           <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
+            <li class="nav-item {% if page_object.object_list %}active{% endif %}">
               <a class="nav-link" href="{% url 'posts_list_url' %}">Posts</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item {% if tags %}active{% endif %}">
               <a class="nav-link" href="{% url 'tags_list_url' %}">Tags</a>
             </li>
-            
-            <li class="nav-item">
-              <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-            </li>
           </ul>
-          <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+
+          <form class="form-inline my-2 my-lg-0" action="{% url 'posts_list_url' %}">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="search">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
           </form>
+
         </div>
       </nav>
 
-    <div class="container mt-5">
+    <div class="container mt-4">
         <div class = "row">
             <div class="col-6 offset-md-2">
                 {% block content%}
                     There is no any content for you
-                {% endblock %}        
+                {% endblock %}  
+
+                {% if is_paginated %}
+                
+                  <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                      <li class="page-item {% if not prev_page_url %}disabled{% endif %}">
+                        <a class="page-link" href="{{ prev_page_url }}">Previous</a>
+                      </li>
+
+                      {% for n in page_object.paginator.page_range %}
+
+                        {% if page_object.number == n %}
+                          <li class="page-item active">
+                            <a class="page-link" href="?page={{ n }}{% if search_query %}&search={{search_query}}{% endif %}">{{ n }}</a>
+                          </li>
+                        {% elif n > page_object.number|add:-3 and n < page_object.number|add:3 %}
+                          <li class="page-item">
+                            <a class="page-link" href="?page={{ n }}{% if search_query %}&search={{search_query}}{% endif %}">{{ n }}</a>
+                          </li>
+                        {% endif %}
+
+                      {% endfor %}
+
+                      <li class="page-item {% if not next_page_url %}disabled{% endif %}">
+                        <a class="page-link" href="{{ next_page_url }}">Next</a>
+                      </li>
+                    </ul>
+                  </nav>  
+
+                {% endif %}   
             </div>
         </div>
     </div>

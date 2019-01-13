@@ -1,14 +1,18 @@
+from django.views.generic import View
+
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
-from django.views.generic import View
+
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.paginator import Paginator
+from django.db.models import Q
 
 from .models import Post, Tag
 from .utils import *
 from .forms import TagForm, PostForm
 
-from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class PostDetail(ObjectDetailMixin, View):
@@ -37,8 +41,42 @@ class PostDelete(LoginRequiredMixin, ObjectDeleteMixin, View):
 
 
 def posts_list(request):
-    posts = Post.objects.all()
-    return render(request, 'blog/index.html', context={'posts': posts})
+    search_query = request.GET.get('search', '')
+
+    if search_query:
+        posts = Post.objects.filter(Q(title__icontains=search_query) | Q(body__icontains=search_query))
+    else:
+        posts = Post.objects.all()
+
+    paginator = Paginator(posts, 2)
+    page_number = request.GET.get('page', 1)
+    page = paginator.get_page(page_number)
+
+    is_paginated = page.has_other_pages()
+
+    if page.has_previous():
+        prev_page_url = '?page={}'.format(page.previous_page_number())
+        prev_page_url = prev_page_url + ('&search={}'.format(search_query) if search_query else '')
+    else:
+        prev_page_url = ''
+
+    if page.has_next():
+        next_page_url = '?page={}'.format(page.next_page_number())
+        next_page_url = next_page_url + ('&search={}'.format(search_query) if search_query else '')
+    else:
+        next_page_url = ''
+
+    context = {
+        'page_object': page,
+        'is_paginated': is_paginated,
+        'prev_page_url': prev_page_url,
+        'next_page_url': next_page_url,
+        'search_query': search_query
+    }
+
+    print(context)
+
+    return render(request, 'blog/index.html', context=context)
 
 
 
